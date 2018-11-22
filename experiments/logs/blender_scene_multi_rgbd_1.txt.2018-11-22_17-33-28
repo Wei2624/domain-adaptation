@@ -1,0 +1,45 @@
++ echo Logging output to experiments/logs/blender_scene_multi_rgbd_1.txt.2018-11-22_17-33-28
+Logging output to experiments/logs/blender_scene_multi_rgbd_1.txt.2018-11-22_17-33-28
++ ./training.py --gpu 0 --network vgg16 --weights data/imagenet_models/vgg16_convs.npy --imdb blender_scene_1_train --cfg experiments/cfgs/blender_scene_1_multi_rgbd.yml --iters 60000
+--------------------------------------------------
+Using config:
+{'EPS': 1e-14,
+ 'EXP_DIR': 'blender_scene_1',
+ 'FLIP_X': False,
+ 'GPU_ID': 0,
+ 'INPUT': 'RGBD',
+ 'NETWORK': 'VGG16',
+ 'PIXEL_MEANS': array([[[102.9801, 115.9465, 122.7717]]]),
+ 'RNG_SEED': 3,
+ 'ROOT_DIR': '/home/weizhang/Documents/domain-adaptation',
+ 'TEST': {'GRID_SIZE': 512,
+          'RANSAC': False,
+          'SCALES_BASE': [1.0],
+          'SINGLE_FRAME': False,
+          'VERTEX_REG': False,
+          'VISUALIZE': False},
+ 'TRAIN': {'CHROMATIC': True,
+           'DISPLAY': 20,
+           'GAMMA': 0.1,
+           'GRID_SIZE': 512,
+           'IMS_PER_BATCH': 1,
+           'LEARNING_RATE': 0.0001,
+           'MOMENTUM': 0.9,
+           'NUM_CLASSES': 8,
+           'NUM_STEPS': 3,
+           'NUM_UNITS': 64,
+           'SCALES_BASE': [1.0],
+           'SINGLE_FRAME': False,
+           'SNAPSHOT_INFIX': 'blender_scene_1',
+           'SNAPSHOT_ITERS': 10000,
+           'SNAPSHOT_PREFIX': 'vgg16_fcn_rgbd_multi_frame',
+           'STEPSIZE': 30000,
+           'TRAINABLE': True,
+           'USE_FLIPPED': False,
+           'VERTEX_REG': False,
+           'VERTEX_W': 10.0,
+           'VISUALIZE': False}}
+
+real	0m0.230s
+user	0m0.300s
+sys	0m0.312s

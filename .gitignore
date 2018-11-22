@@ -1,0 +1,8 @@
+*.mat
+*.mex*
+*.pyc
+*.tgz
+*.so
+*.o
+output/*
+lib/icp/icp_main.cpp
