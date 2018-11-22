@@ -18,7 +18,7 @@ echo Logging output to "$LOG"
 time ./training.py --gpu 0 \
  --network vgg16 \
  --weights data/imagenet_models/vgg16_convs.npy \
- --imdb blender_scene_1_train \
+ --imdb blender_scene_train \
  --cfg experiments/cfgs/blender_scene_1_multi_rgbd.yml \
  --iters 60000
 
