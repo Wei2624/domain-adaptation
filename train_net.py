@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import path
-from fcn.train import get_training_roidb#, train_net
+from fcn.train import get_training_roidb, train_net
 from fcn.config import cfg, cfg_from_file, get_output_dir
 from datasets.factory import get_imdb
 import argparse
@@ -81,3 +81,9 @@ if __name__ == '__main__':
 
 	# import ipdb
 	# ipdb.set_trace()
+
+	print 'Use network `{:s}` in training'.format(args.network_name)
+
+	train_net(network, imdb, roidb, output_dir,
+				pretrained_model=pretrained_model,
+				max_iters=args.max_iters)

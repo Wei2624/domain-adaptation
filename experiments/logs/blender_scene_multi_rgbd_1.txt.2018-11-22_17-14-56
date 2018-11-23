@@ -1,9 +1,0 @@
-+ echo Logging output to experiments/logs/blender_scene_multi_rgbd_1.txt.2018-11-22_17-14-56
-Logging output to experiments/logs/blender_scene_multi_rgbd_1.txt.2018-11-22_17-14-56
-+ ./training.py --gpu 0 --network vgg16 --weights data/imagenet_models/vgg16_convs.npy --imdb blender_scene_1_train --cfg experiments/cfgs/blender_scene_1_multi_rgbd.yml --iters 60000
-Called with args:
-Namespace(cfg_file='experiments/cfgs/blender_scene_1_multi_rgbd.yml', gpu_id=0, imdb_name='blender_scene_1_train', max_iters=60000, network_name='vgg16', pretrained_model='data/imagenet_models/vgg16_convs.npy', randomize=False)
-
-real	0m0.079s
-user	0m0.096s
-sys	0m0.136s

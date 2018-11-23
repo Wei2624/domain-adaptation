@@ -28,7 +28,7 @@ CUDA_PATH=/usr/local/cuda
 cd computing_flow_layer
 
 nvcc -std=c++11 -c -o computing_flow_op.cu.o computing_flow_op_gpu.cu.cc \
-	-I $TF_INC -D GOOGLE_CUDA=1 -x cu -Xcompiler -fPIC -arch=sm_50
+	-I $TF_INC -D GOOGLE_CUDA=1 -x cu -Xcompiler -fPIC -arch=sm_50 --expt-relaxed-constexpr
 
 g++ -std=c++11 -shared -o computing_flow.so computing_flow_op.cc \
 	computing_flow_op.cu.o -I $TF_INC -I$TF_INC/external/nsync/public -fPIC -D_GLIBCXX_USE_CXX11_ABI=0 -lcudart -L $CUDA_PATH/lib64 -L$TF_LIB -ltensorflow_framework
@@ -38,7 +38,7 @@ echo 'build computing flow layer'
 cd backprojecting_layer
 
 nvcc -std=c++11 -c -o backprojecting_op.cu.o backprojecting_op_gpu.cu.cc \
-	-I $TF_INC -D GOOGLE_CUDA=1 -x cu -Xcompiler -fPIC -arch=sm_50
+	-I $TF_INC -D GOOGLE_CUDA=1 -x cu -Xcompiler -fPIC -arch=sm_50 --expt-relaxed-constexpr
 
 g++ -std=c++11 -shared -o backprojecting.so backprojecting_op.cc \
 	backprojecting_op.cu.o -I $TF_INC -I$TF_INC/external/nsync/public -fPIC -D_GLIBCXX_USE_CXX11_ABI=0 -lcudart -L $CUDA_PATH/lib64 -L$TF_LIB -ltensorflow_framework
@@ -58,7 +58,7 @@ echo 'build backprojecting layer'
 cd computing_label_layer
 
 nvcc -std=c++11 -c -o computing_label_op.cu.o computing_label_op_gpu.cu.cc \
-	-I $TF_INC -D GOOGLE_CUDA=1 -x cu -Xcompiler -fPIC -arch=sm_50
+	-I $TF_INC -D GOOGLE_CUDA=1 -x cu -Xcompiler -fPIC -arch=sm_50 --expt-relaxed-constexpr
 
 g++ -std=c++11 -shared -o computing_label.so computing_label_op.cc \
 	computing_label_op.cu.o -I $TF_INC -I$TF_INC/external/nsync/public -fPIC -D_GLIBCXX_USE_CXX11_ABI=0 -lcudart -L $CUDA_PATH/lib64 -L$TF_LIB -ltensorflow_framework

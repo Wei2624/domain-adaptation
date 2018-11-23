@@ -15,7 +15,7 @@ exec &> >(tee -a "$LOG")
 echo Logging output to "$LOG"
 
 # train FCN for multiple frames
-time ./training.py --gpu 0 \
+time ./train_net.py --gpu 0 \
  --network vgg16 \
  --weights data/imagenet_models/vgg16_convs.npy \
  --imdb blender_scene_train \
