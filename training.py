@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import path
-# from fcn.train import get_training_roidb, train_net
+from fcn.train import get_training_roidb#, train_net
 from fcn.config import cfg, cfg_from_file, get_output_dir
 from datasets.factory import get_imdb
 import argparse
@@ -67,3 +67,17 @@ if __name__ == '__main__':
 
 	output_dir = get_output_dir(imdb, None)
 	print 'Output will be saved to `{:s}`'.format(output_dir)
+
+
+	device_name = '/gpu:{:d}'.format(args.gpu_id)
+	cfg.GPU_ID = args.gpu_id
+	print device_name
+
+
+	pretrained_model = args.pretrained_model
+
+	from networks.factory import get_network
+	network = get_network(args.network_name)
+
+	# import ipdb
+	# ipdb.set_trace()
