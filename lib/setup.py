@@ -114,7 +114,7 @@ ext_modules = [
                                      '--compiler-options',
                                      "'-fPIC'"]},
         include_dirs = [numpy_include, CUDA['include'], '/usr/local/include/eigen3']
-    ),
+    )#,
 #    Extension(
 #        "pose_estimation.ransac",                                # the extension name
 #        sources=['pose_estimation/ransac.pyx'],
@@ -123,19 +123,19 @@ ext_modules = [
 #        extra_compile_args={'gcc': ["-Wno-unused-function", "-D_GLIBCXX_USE_CXX11_ABI=0"]},
 #        include_dirs = ['pose_estimation/include']
 #    ),
-    Extension(
-        "kinect_fusion.kfusion",                                # the extension name
-        sources=['kinect_fusion/kfusion.pyx'],
-        language='c++',
-        extra_objects=["kinect_fusion/build/libkfusion.so"],
-        extra_compile_args={'gcc': ["-Wno-unused-function", "-D_GLIBCXX_USE_CXX11_ABI=0"],
-                            'nvcc': ['-arch=sm_35',
-                                     '--ptxas-options=-v',
-                                     '-c',
-                                     '--compiler-options',
-                                     "'-fPIC'"]},
-        include_dirs = ['/usr/local/include/eigen3', '/usr/local/cuda/include', 'kinect_fusion/include']
-    )
+    # Extension(
+    #     "kinect_fusion.kfusion",                                # the extension name
+    #     sources=['kinect_fusion/kfusion.pyx'],
+    #     language='c++',
+    #     extra_objects=["kinect_fusion/build/libkfusion.so"],
+    #     extra_compile_args={'gcc': ["-Wno-unused-function", "-D_GLIBCXX_USE_CXX11_ABI=0"],
+    #                         'nvcc': ['-arch=sm_35',
+    #                                  '--ptxas-options=-v',
+    #                                  '-c',
+    #                                  '--compiler-options',
+    #                                  "'-fPIC'"]},
+    #     include_dirs = ['/usr/local/include/eigen3', '/usr/local/cuda/include', 'kinect_fusion/include']
+    # )
 ]
 
 setup(

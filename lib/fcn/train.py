@@ -1,5 +1,5 @@
 from fcn.config import cfg
-# from gt_data_layer.layer import GtDataLayer
+from gt_data_layer.layer import GtDataLayer
 # from gt_single_data_layer.layer import GtSingleDataLayer
 from utils.timer import Timer
 import numpy as np
