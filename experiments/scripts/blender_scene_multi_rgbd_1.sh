@@ -15,24 +15,24 @@ exec &> >(tee -a "$LOG")
 echo Logging output to "$LOG"
 
 # train FCN for multiple frames
-time ./train_net.py --gpu 0 \
- --network vgg16 \
- --weights data/imagenet_models/vgg16_convs.npy \
- --imdb blender_scene_train \
- --cfg experiments/cfgs/blender_scene_1_multi_rgbd.yml \
- --iters 60000
+# time ./train_net.py --gpu 0 \
+#  --network vgg16 \
+#  --weights data/imagenet_models/vgg16_convs.npy \
+#  --imdb blender_scene_train \
+#  --cfg experiments/cfgs/blender_scene_1_multi_rgbd.yml \
+#  --iters 60000
 
 # if [ -f $PWD/output/shapenet_scene/shapenet_scene_val/vgg16_fcn_rgbd_multi_frame_shapenet_scene_iter_40000/segmentations.pkl ]
 # then
 #   rm $PWD/output/shapenet_scene/shapenet_scene_val/vgg16_fcn_rgbd_multi_frame_shapenet_scene_iter_40000/segmentations.pkl
 # fi
 
-#  test FCN for multiple frames
-# time ./tools/test_net.py --gpu 0 \
-#   --network vgg16 \
-#   --model output/shapenet_scene/shapenet_scene_train/vgg16_fcn_rgbd_multi_frame_shapenet_scene_iter_40000.ckpt \
-#   --imdb shapenet_scene_val \
-#   --cfg experiments/cfgs/shapenet_scene_multi_rgbd.yml \
-#   --rig data/ShapeNetScene/camera.json\
-#   --kfusion 1
+ # test FCN for multiple frames
+time ./test_net.py --gpu 0 \
+  --network vgg16 \
+  --model output/blender_scene_1/blender_scene_train/vgg16_fcn_rgbd_multi_frame_shapenet_scene_iter_40000.ckpt \
+  --imdb blender_scene_val \
+  --cfg experiments/cfgs/blender_scene_1_multi_rgbd.yml \
+  --rig data/BlenderScene/camera.json\
+  --kfusion 0
 

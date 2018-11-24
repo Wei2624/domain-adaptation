@@ -8,8 +8,7 @@ import argparse
 import pprint
 import numpy as np
 import sys
-import os.path as osp
-import sys
+import os
 
 
 def parse_args():
