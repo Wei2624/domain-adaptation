@@ -65,9 +65,9 @@ class SolverWrapper(object):
             train_writer.add_summary(summary, iter)
             timer.toc()
 
-            print self.net.get_output('data')
-            import ipdb
-            ipdb.set_trace()
+            # print self.net.get_output('data')
+            # import ipdb
+            # ipdb.set_trace()
             
             print 'iter: %d / %d, loss: %.4f, lr: %.8f, time: %.2f' %\
                     (iter+1, max_iters, loss_value, lr, timer.diff)
