@@ -12,3 +12,8 @@ lib_path = os.path.join(this_dir, 'lib')
 add_path(lib_path)
 lib_path = os.path.join(this_dir,'lib/kinect_fusion/build')
 add_path(lib_path)
+
+
+
+add_path('/home/weizhang/kinect_rgdb_collector_ws/devel/lib/python2.7/dist-packages')
+add_path('/opt/ros/kinetic/lib/python2.7/dist-packages')

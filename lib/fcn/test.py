@@ -191,12 +191,12 @@ def im_segment(sess, net, im, im_depth, state, weights, points, meta_data, voxel
 		feed_dict = {net.data: data_blob, net.gt_label_2d: label_blob, net.state: state, net.weights: weights, net.depth: depth_blob, \
 					 net.meta_data: meta_data_blob, net.points: points, net.keep_prob: 1.0}
 
-	print 'before enquueue-------------------'
+	# print 'before enquueue-------------------'
 	sess.run(net.enqueue_op, feed_dict=feed_dict)
-	print 'after enqueue-----------------------------'
+	# print 'after enqueue-----------------------------'
 	labels_pred_2d, probs, state, weights, points = sess.run([net.get_output('labels_pred_2d'), net.get_output('probs'), \
 		net.get_output('output_state'), net.get_output('output_weights'), net.get_output('output_points')], feed_dict=feed_dict)
-	print 'after sess.run------------------------------------------'
+	# print 'after sess.run------------------------------------------'
 
 	labels_2d = labels_pred_2d[0]
 
@@ -396,9 +396,9 @@ def test_net(sess, net, imdb, weights_filename, rig_filename, is_kfusion):
 		pose_live2world = se3_inverse(pose_world2live)
 
 		_t['im_segment'].tic()
-		print 'before feed dict----------------------------------'
+		# print 'before feed dict----------------------------------'
 		labels, probs, state, weights, points = im_segment(sess, net, im, im_depth, state, weights, points, meta_data, voxelizer, pose_world2live, pose_live2world)
-		print 'after feed dict----------------------------------'
+		# print 'after feed dict----------------------------------'
 		_t['im_segment'].toc()
 		# time.sleep(3)
 
@@ -445,6 +445,7 @@ def test_net(sess, net, imdb, weights_filename, rig_filename, is_kfusion):
 				im_label_gt = np.copy(labels_gt[:,:,:3])
 				im_label_gt[:,:,0] = labels_gt[:,:,2]
 				im_label_gt[:,:,2] = labels_gt[:,:,0]
+			# im_label_gt = im_label_gt[...,[2,1,0]]
 			vis_segmentations(im, im_depth, im_label, im_label_gt, imdb._class_colors)
 
 		print 'im_segment: {:d}/{:d} {:.3f}s {:.3f}s' \

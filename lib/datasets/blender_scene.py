@@ -189,6 +189,7 @@ class blender_scene(datasets.imdb):
 
     def labels_to_image(self, im, labels):
         class_colors = self._class_colors
+        # print class_colors
         height = labels.shape[0]
         width = labels.shape[1]
         image_r = np.zeros((height, width), dtype=np.float32)
@@ -203,12 +204,86 @@ class blender_scene(datasets.imdb):
             image_b[I] = color[2]
 
         image = np.stack((image_r, image_g, image_b), axis=-1)
+        # import matplotlib.pyplot as plt
+        # plt.imshow(image)
+        # plt.show()
         # index = np.where(image == 255)
         # image[index] = im[index]
         # image = 0.1*im + 0.9*image
 
         return image.astype(np.uint8)
 
+
+    # def evaluate_segmentations(self, segmentations, output_dir):
+    #     print 'evaluating segmentations'
+    #     # compute histogram
+    #     n_cl = self.num_classes
+    #     hist = np.zeros((n_cl, n_cl))
+
+    #     # make image dir
+    #     image_dir = os.path.join(output_dir, 'images')
+    #     if not os.path.exists(image_dir):
+    #         os.makedirs(image_dir)
+
+    #     # make matlab result dir
+    #     import scipy.io
+    #     mat_dir = os.path.join(output_dir, 'mat')
+    #     if not os.path.exists(mat_dir):
+    #         os.makedirs(mat_dir)
+
+    #     # for each image
+    #     for im_ind, index in enumerate(self.image_index):
+    #         # read ground truth labels
+    #         im = cv2.imread(self.label_path_from_index(index), cv2.IMREAD_UNCHANGED)
+    #         gt_labels = self._process_label_image(im)
+
+    #         # predicated labels
+    #         sg_labels = segmentations[im_ind]['labels']
+
+    #         hist += self.fast_hist(gt_labels.flatten(), sg_labels.flatten(), n_cl)
+
+    #         """
+    #         # label image
+    #         rgba = cv2.imread(self.image_path_from_index(index), cv2.IMREAD_UNCHANGED)
+    #         image = rgba[:,:,:3]
+    #         alpha = rgba[:,:,3]
+    #         I = np.where(alpha == 0)
+    #         image[I[0], I[1], :] = 255
+    #         label_image = self.labels_to_image(image, sg_labels)
+
+    #         # save image
+    #         filename = os.path.join(image_dir, '%04d.png' % im_ind)
+    #         print filename
+    #         cv2.imwrite(filename, label_image)
+    #         """
+
+    #         """
+    #         # save matlab result
+    #         labels = {'labels': sg_labels}
+    #         filename = os.path.join(mat_dir, '%04d.mat' % im_ind)
+    #         print filename
+    #         scipy.io.savemat(filename, labels)
+    #         #"""
+
+    #     # overall accuracy
+    #     acc = np.diag(hist).sum() / hist.sum()
+    #     print 'overall accuracy', acc
+    #     # per-class accuracy
+    #     acc = np.diag(hist) / hist.sum(1)
+    #     print 'mean accuracy', np.nanmean(acc)
+    #     # per-class IU
+    #     print 'per-class IU'
+    #     iu = np.diag(hist) / (hist.sum(1) + hist.sum(0) - np.diag(hist))
+    #     for i in range(n_cl):
+    #         print '{} {}'.format(self._classes[i], iu[i])
+    #     print 'mean IU', np.nanmean(iu)
+    #     freq = hist.sum(1) / hist.sum()
+    #     print 'fwavacc', (freq[freq > 0] * iu[freq > 0]).sum()
+
+    #     filename = os.path.join(output_dir, 'segmentation.txt')
+    #     with open(filename, 'wt') as f:
+    #         for i in range(n_cl):
+    #             f.write('{:f}\n'.format(iu[i]))
 
     def evaluate_segmentations(self, segmentations, output_dir):
         print 'evaluating segmentations'
@@ -231,14 +306,14 @@ class blender_scene(datasets.imdb):
         for im_ind, index in enumerate(self.image_index):
             # read ground truth labels
             im = cv2.imread(self.label_path_from_index(index), cv2.IMREAD_UNCHANGED)
-            gt_labels = self._process_label_image(im)
+            gt_labels = im.astype(np.float32)
 
             # predicated labels
             sg_labels = segmentations[im_ind]['labels']
 
             hist += self.fast_hist(gt_labels.flatten(), sg_labels.flatten(), n_cl)
 
-            """
+            '''
             # label image
             rgba = cv2.imread(self.image_path_from_index(index), cv2.IMREAD_UNCHANGED)
             image = rgba[:,:,:3]
@@ -251,15 +326,14 @@ class blender_scene(datasets.imdb):
             filename = os.path.join(image_dir, '%04d.png' % im_ind)
             print filename
             cv2.imwrite(filename, label_image)
-            """
-
-            """
+            '''
+            '''
             # save matlab result
             labels = {'labels': sg_labels}
             filename = os.path.join(mat_dir, '%04d.mat' % im_ind)
             print filename
             scipy.io.savemat(filename, labels)
-            #"""
+            #'''
 
         # overall accuracy
         acc = np.diag(hist).sum() / hist.sum()
@@ -282,7 +356,10 @@ class blender_scene(datasets.imdb):
                 f.write('{:f}\n'.format(iu[i]))
 
 
+
+
+
 if __name__ == '__main__':
-    d = datasets.blender_scene('train')
+    d = datasets.blender_scene('val')
     res = d.roidb
     from IPython import embed; embed()
