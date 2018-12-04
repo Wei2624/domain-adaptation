@@ -236,7 +236,7 @@ def im_segment(sess, net, im, im_depth, state, weights, points, meta_data, voxel
 def vis_segmentations(im, im_depth, labels, labels_gt, colors):
     """Visual debugging of detections."""
     import matplotlib.pyplot as plt
-    from mpl_toolkits.mplot3d import Axes3D
+    # from mpl_toolkits.mplot3d import Axes3D
     fig = plt.figure()
 
     # show image
@@ -299,20 +299,20 @@ def test_net(sess, net, imdb, weights_filename, rig_filename, is_kfusion):
         os.makedirs(output_dir)
     print 'The Output DIR is:', output_dir
 
-    seg_file = os.path.join(output_dir, 'segmentations.pkl')
-    print imdb.name
-    if os.path.exists(seg_file):
-        with open(seg_file, 'rb') as fid:
-            segmentations = cPickle.load(fid)
-        imdb.evaluate_segmentations(segmentations, output_dir)
-        return
+    # seg_file = os.path.join(output_dir, 'segmentations.pkl')
+    # print imdb.name
+    # if os.path.exists(seg_file):
+    #     with open(seg_file, 'rb') as fid:
+    #         segmentations = cPickle.load(fid)
+    #     imdb.evaluate_segmentations(segmentations, output_dir)
+    #     return
 
     """Test a FCN on an image database."""
     print 'Test a FCN on an image database'
     num_images = len(imdb.image_index)
-    segmentations = [[] for _ in xrange(num_images)]
+    # segmentations = [[] for _ in xrange(num_images)]
 
-    segmentations = [[] for _ in xrange(100)]
+    # segmentations = [[] for _ in xrange(100)]
 
     # timers
     _t = {'im_segment': Timer(), 'misc': Timer()}
@@ -329,7 +329,7 @@ def test_net(sess, net, imdb, weights_filename, rig_filename, is_kfusion):
         colors[i * 3 + 0] = imdb._class_colors[i][0]
         colors[i * 3 + 1] = imdb._class_colors[i][1]
         colors[i * 3 + 2] = imdb._class_colors[i][2]
-    print colors
+    # print colors
 
     if cfg.TEST.VISUALIZE:
         perm = np.random.permutation(np.arange(num_images))
@@ -341,12 +341,16 @@ def test_net(sess, net, imdb, weights_filename, rig_filename, is_kfusion):
     i = 0
     while True:
         print i
-        if i>=100:
-            seg_file = os.path.join('/home/weizhang/DA-RNN/data/LabScene/data/0000/', 'segmentations.pkl')
-            with open(seg_file, 'wb') as f:
-                cPickle.dump(segmentations, f, cPickle.HIGHEST_PROTOCOL)
-            sys.exit()
-        im, im_depth = rgbd_getter.get_rgbd()
+        # if i>=100:
+        #     seg_file = os.path.join('/home/weizhang/DA-RNN/data/LabScene/data/0000/', 'segmentations.pkl')
+        #     with open(seg_file, 'wb') as f:
+        #         cPickle.dump(segmentations, f, cPickle.HIGHEST_PROTOCOL)
+        #     sys.exit()
+        # im, im_depth = rgbd_getter.data_getter()
+        data_chunk = rgbd_getter.data_getter()
+        im = data_chunk['rgb_image']
+        im_depth = data_chunk['depth_image']
+
         rgba = cv2.imread(imdb.image_path_at(i), cv2.IMREAD_UNCHANGED)
         # path = '/home/weizhang/DA-RNN/data/LabScene/data/0000/' + '{:04d}_rgba.png'.format(i)
         #
@@ -362,21 +366,27 @@ def test_net(sess, net, imdb, weights_filename, rig_filename, is_kfusion):
 
         # parse image name
         image_index = imdb.image_index[i]
-        pos = image_index.find('/')
-        if video_index == '':
-            video_index = image_index[:pos]
+        # pos = image_index.find('/')
+        # if video_index == '':
+        #     video_index = image_index[:pos]
+        #     have_prediction = False
+        #     state = np.zeros((1, height, width, cfg.TRAIN.NUM_UNITS), dtype=np.float32)
+        #     weights = np.ones((1, height, width, cfg.TRAIN.NUM_UNITS), dtype=np.float32)
+        #     points = np.zeros((1, height, width, 3), dtype=np.float32)
+        # else:
+        #     if video_index != image_index[:pos]:
+        #         have_prediction = False
+        #         video_index = image_index[:pos]
+        #         state = np.zeros((1, height, width, cfg.TRAIN.NUM_UNITS), dtype=np.float32)
+        #         weights = np.ones((1, height, width, cfg.TRAIN.NUM_UNITS), dtype=np.float32)
+        #         points = np.zeros((1, height, width, 3), dtype=np.float32)
+        #         print 'start video {}'.format(video_index)
+
+        if i == 0:
             have_prediction = False
             state = np.zeros((1, height, width, cfg.TRAIN.NUM_UNITS), dtype=np.float32)
             weights = np.ones((1, height, width, cfg.TRAIN.NUM_UNITS), dtype=np.float32)
             points = np.zeros((1, height, width, 3), dtype=np.float32)
-        else:
-            if video_index != image_index[:pos]:
-                have_prediction = False
-                video_index = image_index[:pos]
-                state = np.zeros((1, height, width, cfg.TRAIN.NUM_UNITS), dtype=np.float32)
-                weights = np.ones((1, height, width, cfg.TRAIN.NUM_UNITS), dtype=np.float32)
-                points = np.zeros((1, height, width, 3), dtype=np.float32)
-                print 'start video {}'.format(video_index)
 
         # read color image
         if rgba.shape[2] == 4:
@@ -393,7 +403,6 @@ def test_net(sess, net, imdb, weights_filename, rig_filename, is_kfusion):
 
         # thres = np.percentile(im_depth,60)
         # idx = np.where(im_depth>thres)
-        print im_depth.shape
         im_depth = pad_im(im_depth, 16)
 
         # im_depth = cv2.imread('/home/weizhang/DA-RNN/data/RGBDScene/data/scene_01/{:05d}-color.png'.format(i), cv2.IMREAD_UNCHANGED)
@@ -402,7 +411,8 @@ def test_net(sess, net, imdb, weights_filename, rig_filename, is_kfusion):
         # im_depth = pad_im(im_depth, 16)
 
         # load meta data
-        meta_data = form_meta_data()
+        # meta_data = form_meta_data()
+        meta_data = data_chunk['meta_data']
 
         # backprojection for the first frame
         if not have_prediction:
@@ -452,8 +462,8 @@ def test_net(sess, net, imdb, weights_filename, rig_filename, is_kfusion):
         # compute the delta transformation between frames
         RT_world = RT_live
 
-        seg = {'labels': labels}
-        segmentations[i] = seg
+        # seg = {'labels': labels}
+        # segmentations[i] = seg
 
         _t['misc'].toc()
 
@@ -470,15 +480,16 @@ def test_net(sess, net, imdb, weights_filename, rig_filename, is_kfusion):
 
         print 'im_segment: {:d}/{:d} {:.3f}s {:.3f}s' \
             .format(i + 1, num_images, _t['im_segment'].diff, _t['misc'].diff)
+
         i += 1
 
 
-    seg_file = os.path.join(output_dir, 'segmentations.pkl')
-    with open(seg_file, 'wb') as f:
-        cPickle.dump(segmentations, f, cPickle.HIGHEST_PROTOCOL)
+    # seg_file = os.path.join(output_dir, 'segmentations.pkl')
+    # with open(seg_file, 'wb') as f:
+    #     cPickle.dump(segmentations, f, cPickle.HIGHEST_PROTOCOL)
 
     # evaluation
-    imdb.evaluate_segmentations(segmentations, output_dir)
+    # imdb.evaluate_segmentations(segmentations, output_dir)
 
 
 # compute the voting label image in 2D

@@ -75,9 +75,6 @@ if __name__ == '__main__':
 
     cfg.TRAIN.NUM_STEPS = 1
     cfg.TRAIN.GRID_SIZE = cfg.TEST.GRID_SIZE
-    if cfg.NETWORK == 'FCN8VGG':
-        path = osp.abspath(osp.join(cfg.ROOT_DIR, args.pretrained_model))
-        cfg.TRAIN.MODEL_PATH = path
     cfg.TRAIN.TRAINABLE = False
 
     from networks.factory import get_network
@@ -87,11 +84,7 @@ if __name__ == '__main__':
 
     # start a session
     saver = tf.train.Saver()
-    if args.kfusion:
-        gpu_options = tf.GPUOptions(per_process_gpu_memory_fraction=0.2)
-        sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True, gpu_options=gpu_options))
-    else:
-        sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
+    sess = tf.Session(config=tf.ConfigProto(allow_soft_placement=True))
     saver.restore(sess, args.model)
     print ('Loading model weights from {:s}').format(args.model)
 

@@ -3,9 +3,16 @@
 __sets = {}
 
 import datasets.blender_scene
+import datasets.shapenet_scene
 import numpy as np
 
 # shapenet dataset
+for split in ['train', 'val']:
+    name = 'shapenet_scene_{}'.format(split)
+    print name
+    __sets[name] = (lambda split=split:
+            datasets.shapenet_scene(split))
+
 for split in ['train', 'val']:
     name = 'blender_scene_{}'.format(split)
     print name

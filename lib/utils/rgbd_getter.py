@@ -1,6 +1,6 @@
 #! /usr/bin/env python
-import sys
-sys.path.insert(0,'/home/weizhang/Documents/domain-adaptation/')
+# import sys
+# sys.path.insert(0,'/home/weizhang/Documents/domain-adaptation/')
 import path
 import rospy
 import matplotlib.pyplot as plt
@@ -114,7 +114,7 @@ class RGBDDataCollector:
         self._pcl_data = pcl.PointCloud()
         self._pcl_data.from_array(self._pcl_array)
 
-    def get_rgbd_data(self):
+    def get_data(self):
         with self._read_lock:
             if not self.ready():
                 return None
@@ -156,10 +156,28 @@ def init_service(rgb_image_topic, depth_image_topic,camera_info_topic,cloud_topi
     )
 
 
-def get_rgbd():
+def get_all_data():
     if not _rgbd_data_collector:
         raise ValueError("RGBDDataCollector has not been initialized. Did you call 'init_service'?")
-    return _rgbd_data_collector.get_rgbd_data()
+    return _rgbd_data_collector.get_data()
+
+def data_formatter(data_chunk):
+    data_dict = {}
+    meta = {}
+
+    meta['factor_depth'] = np.array([[500]]).astype(np.uint16)
+    meta['intrinsic_matrix'] = np.resize(np.asarray(data_chunk[2].K),(3,3))
+    meta['projection_matrix'] = np.resize(np.asarray(data_chunk[2].P),(3,4))
+    meta['rotation_translation_matrix'] = np.matmul(np.linalg.inv(meta['intrinsic_matrix']), meta['projection_matrix'])
+
+
+    data_dict['rgb_image'] = data_chunk[0]
+    data_dict['depth_image'] = data_chunk[1]
+    data_dict['camera_info'] = data_chunk[2]
+    data_dict['point_cloud_array'] = data_chunk[3]
+    data_dict['meta_data'] = meta
+
+    return data_dict
 
 
 def save_rgbd_example(rgbd_example, save_location, index):
@@ -189,8 +207,21 @@ def main():
     while not ready():
         time.sleep(0.5)
 
-    rgbd_data = get_rgbd()
-    save_rgbd_example(rgbd_data, save_location, 0)
+    # rgbd_data = get_all_data()
+    # save_rgbd_example(rgbd_data, save_location, 0)
+
+
+def data_getter():
+    main()
+    data_chunk = get_all_data()
+    data_dict = data_formatter(data_chunk)
+
+    # import ipdb
+    # ipdb.set_trace()
+
+    return data_dict
+
+
 
 
 if __name__ == '__main__':

@@ -28,7 +28,7 @@ export CUDA_VISIBLE_DEVICES=$1
 time ./test_net_old.py --gpu 0 \
   --network vgg16 \
   --model output/shapenet_scene/shapenet_scene_train/vgg16_fcn_rgbd_multi_frame_shapenet_scene_iter_50000.ckpt \
-  --imdb blender_scene_val \
+  --imdb shapenet_scene_val \
   --cfg experiments/cfgs/shapenet_scene_multi_rgbd.yml \
   --rig data/LabScene/camera.json \
   --kfusion 0
