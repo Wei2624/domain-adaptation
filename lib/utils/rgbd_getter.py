@@ -1,6 +1,6 @@
 #! /usr/bin/env python
-# import sys
-# sys.path.insert(0,'/home/weizhang/Documents/domain-adaptation/')
+import sys
+sys.path.insert(0,'/home/weizhang/Documents/domain-adaptation/')
 import path
 import rospy
 import matplotlib.pyplot as plt
@@ -190,15 +190,15 @@ def ready():
 
 
 def main():
-    rgb_image_topic = "/camera/rgb/image_color"
-    depth_image_topic = "/camera/depth/image_raw"
-    camera_info_topic = "/camera/depth/camera_info"
-    cloud_topic = '/camera/depth/points'
+    # rgb_image_topic = "/camera/rgb/image_color"
+    # depth_image_topic = "/camera/depth/image_raw"
+    # camera_info_topic = "/camera/depth/camera_info"
+    # cloud_topic = '/camera/depth/points'
 
-    # rgb_image_topic = "/head_camera/rgb/image_raw"
-    # depth_image_topic = "/head_camera/depth/image_raw"
-    # cloud_topic = "/head_camera/depth/points"
-    # camera_info_topic = "/head_camera/depth/camera_info"
+    rgb_image_topic = "/head_camera/rgb/image_raw"
+    depth_image_topic = "/head_camera/depth/image_raw"
+    cloud_topic = "/head_camera/depth/points"
+    camera_info_topic = "/head_camera/depth/camera_info"
 
     save_location = 'examples'
 

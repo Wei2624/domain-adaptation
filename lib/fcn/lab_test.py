@@ -17,8 +17,14 @@ import time
 from normals import gpu_normals
 # from kinect_fusion import kfusion
 from utils import rgbd_getter
+import post_proc_da
+import socket
 # from pose_estimation import ransac
 import sys
+import time
+
+HOST = '192.168.1.2'
+PORT = 65432
 
 
 def _get_image_blob(im, im_depth, meta_data):
@@ -253,11 +259,11 @@ def vis_segmentations(im, im_depth, labels, labels_gt, colors):
     # show class label
     ax = fig.add_subplot(223)
     plt.imshow(labels)
-    ax.set_title('class labels')
+    ax.set_title('class labels from model')
 
     ax = fig.add_subplot(224)
     plt.imshow(labels_gt)
-    ax.set_title('gt class labels')
+    ax.set_title('class labels after processing')
 
     # show the 3D points
     '''
@@ -347,11 +353,17 @@ def test_net(sess, net, imdb, weights_filename, rig_filename, is_kfusion):
         #         cPickle.dump(segmentations, f, cPickle.HIGHEST_PROTOCOL)
         #     sys.exit()
         # im, im_depth = rgbd_getter.data_getter()
+        start_time = time.time()
+
         data_chunk = rgbd_getter.data_getter()
+
+        print "--- %s seconds ---" % (time.time() - start_time)
+
+
         im = data_chunk['rgb_image']
         im_depth = data_chunk['depth_image']
 
-        rgba = cv2.imread(imdb.image_path_at(i), cv2.IMREAD_UNCHANGED)
+        # rgba = cv2.imread(imdb.image_path_at(i), cv2.IMREAD_UNCHANGED)
         # path = '/home/weizhang/DA-RNN/data/LabScene/data/0000/' + '{:04d}_rgba.png'.format(i)
         #
         # im = cv2.imread(path, cv2.IMREAD_UNCHANGED)
@@ -423,12 +435,18 @@ def test_net(sess, net, imdb, weights_filename, rig_filename, is_kfusion):
         pose_world2live = se3_mul(RT_live, se3_inverse(RT_world))
         pose_live2world = se3_inverse(pose_world2live)
 
+
+        print "--- %s seconds ---" % (time.time() - start_time)
+
         _t['im_segment'].tic()
         print 'before feed dict----------------------------------'
         labels, probs, state, weights, points = im_segment(sess, net, im, im_depth, state, weights, points, meta_data,
                                                            voxelizer, pose_world2live, pose_live2world)
         print 'after feed dict----------------------------------'
         _t['im_segment'].toc()
+
+
+        print "--- %s seconds ---" % (time.time() - start_time)
         # time.sleep(3)
 
         _t['misc'].tic()
@@ -443,6 +461,9 @@ def test_net(sess, net, imdb, weights_filename, rig_filename, is_kfusion):
         # cv2.imwrite(label_path,im_label)
 
 
+        im_label_post, lbl_pcd_color = post_proc_da.post_proc(im,data_chunk['point_cloud_array'],im_label,data_chunk['camera_info'])
+
+        print "--- %s seconds ---" % (time.time() - start_time)
         # kernel = np.ones((3,3),np.uint8)
         #
         # im_ero = cv2.erode(im_label,kernel,iterations=1)
@@ -467,6 +488,18 @@ def test_net(sess, net, imdb, weights_filename, rig_filename, is_kfusion):
 
         _t['misc'].toc()
 
+        print 'im_segment: {:d}/{:d} {:.3f}s {:.3f}s' \
+            .format(i + 1, num_images, _t['im_segment'].diff, _t['misc'].diff)
+
+        # csv_file_path = os.path.join('/home/weizhang/Documents/domain-adaptation/data/LabScene/data/0025/', "lbl_pcd_color_{:04d}.csv".format(i))
+        # np.savetxt(csv_file_path, lbl_pcd_color, delimiter=",")
+
+        # s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        # s.bind((HOST, PORT))
+        # s.listen(10)
+        # conn, addr = s.accept()
+        # conn.sendall(b'Hello, world')
+
         if cfg.TEST.VISUALIZE:
             # read label image
             labels_gt = pad_im(cv2.imread(imdb.label_path_at(i), cv2.IMREAD_UNCHANGED), 16)
@@ -476,10 +509,14 @@ def test_net(sess, net, imdb, weights_filename, rig_filename, is_kfusion):
                 im_label_gt = np.copy(labels_gt[:, :, :3])
                 im_label_gt[:, :, 0] = labels_gt[:, :, 2]
                 im_label_gt[:, :, 2] = labels_gt[:, :, 0]
-            vis_segmentations(im, im_depth, im_label, im_label_gt, imdb._class_colors)
+            vis_segmentations(im, im_depth, im_label, im_label_post, imdb._class_colors)
 
-        print 'im_segment: {:d}/{:d} {:.3f}s {:.3f}s' \
-            .format(i + 1, num_images, _t['im_segment'].diff, _t['misc'].diff)
+        # print 'im_segment: {:d}/{:d} {:.3f}s {:.3f}s' \
+        #     .format(i + 1, num_images, _t['im_segment'].diff, _t['misc'].diff)
+
+
+
+            # data = s.recv(1024)
 
         i += 1
 

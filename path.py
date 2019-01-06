@@ -17,3 +17,4 @@ add_path(lib_path)
 
 add_path('/home/weizhang/kinect_rgdb_collector_ws/devel/lib/python2.7/dist-packages')
 add_path('/opt/ros/kinetic/lib/python2.7/dist-packages')
+add_path('/home/weizhang/Documents/pcl_post_processing/')

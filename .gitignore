@@ -8,3 +8,5 @@ output/*
 data/*
 experiments/logs/*
 lib/icp/icp_main.cpp
+**/.idea/workspace.xml
+**/.idea/tasks.xml
