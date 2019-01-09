@@ -353,11 +353,11 @@ def test_net(sess, net, imdb, weights_filename, rig_filename, is_kfusion):
         #         cPickle.dump(segmentations, f, cPickle.HIGHEST_PROTOCOL)
         #     sys.exit()
         # im, im_depth = rgbd_getter.data_getter()
-        start_time = time.time()
+        # start_time = time.time()
 
         data_chunk = rgbd_getter.data_getter()
 
-        print "--- %s seconds ---" % (time.time() - start_time)
+        # print "--- %s seconds ---" % (time.time() - start_time)
 
 
         im = data_chunk['rgb_image']
@@ -436,7 +436,7 @@ def test_net(sess, net, imdb, weights_filename, rig_filename, is_kfusion):
         pose_live2world = se3_inverse(pose_world2live)
 
 
-        print "--- %s seconds ---" % (time.time() - start_time)
+        # print "--- %s seconds ---" % (time.time() - start_time)
 
         _t['im_segment'].tic()
         print 'before feed dict----------------------------------'
@@ -446,7 +446,7 @@ def test_net(sess, net, imdb, weights_filename, rig_filename, is_kfusion):
         _t['im_segment'].toc()
 
 
-        print "--- %s seconds ---" % (time.time() - start_time)
+        # print "--- %s seconds ---" % (time.time() - start_time)
         # time.sleep(3)
 
         _t['misc'].tic()
@@ -460,10 +460,12 @@ def test_net(sess, net, imdb, weights_filename, rig_filename, is_kfusion):
         # label_path = '/home/weizhang/DA-RNN/data/LabScene/data/0000/' + '{:04d}_label.png'.format(i)
         # cv2.imwrite(label_path,im_label)
 
+        # print "--- %s seconds ---" % (time.time() - start_time)
+
 
         im_label_post, lbl_pcd_color = post_proc_da.post_proc(im,data_chunk['point_cloud_array'],im_label,data_chunk['camera_info'])
 
-        print "--- %s seconds ---" % (time.time() - start_time)
+        # print "--- %s seconds ---" % (time.time() - start_time)
         # kernel = np.ones((3,3),np.uint8)
         #
         # im_ero = cv2.erode(im_label,kernel,iterations=1)

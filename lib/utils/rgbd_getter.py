@@ -25,6 +25,7 @@ import signal
 import time
 import ros_numpy
 import operator
+import pickle
 
 # get_rgbd_service_name = 'get_rgbd_service'
 # rospy.wait_for_service(get_rgbd_service_name)
@@ -134,10 +135,12 @@ class RGBDDataCollector:
             os.makedirs(save_location)
 
         # np.savetxt(os.path.join(save_location, '{}_camera2world_tf.npy'.format(index)), rgbd_example.camera2world_tf_mat)
-        cv2.imwrite(os.path.join('{}_rgb.png'.format(index)), rgbd_example.rgb_image)
-        rgbd_example.point_cloud_pcl.to_file(os.path.join('{}_pcl.pcd'.format(index)))
-        cv2.imwrite(os.path.join('{}_rgb.png'.format(index)), rgbd_example.rgb_image)
-        cv2.imwrite(os.path.join('{}_depth.png'.format(index)), rgbd_example.depth_image)
+        cv2.imwrite(os.path.join(save_location,'{}_rgb.png'.format(index)), rgbd_example.rgb_image)
+        rgbd_example.point_cloud_pcl.to_file(os.path.join(save_location, '{}_pcl.pcd'.format(index)))
+        # cv2.imwrite(os.path.join(save_location, '{}_rgb.png'.format(index)), rgbd_example.rgb_image)
+        cv2.imwrite(os.path.join(save_location, '{}_depth.png'.format(index)), rgbd_example.depth_image)
+        with open(os.path.join(save_location, '{}_pkl.pkl'.format(index)), 'wb') as output:
+            pickle.dump(rgbd_example.camera_info, output)
 
     def ready(self):
         return self._rgb_image is not None and self._depth_image is not None and self._pcl_array is not None and self._pcl_data is not None
@@ -190,11 +193,14 @@ def ready():
 
 
 def main():
-    # rgb_image_topic = "/camera/rgb/image_color"
-    # depth_image_topic = "/camera/depth/image_raw"
-    # camera_info_topic = "/camera/depth/camera_info"
-    # cloud_topic = '/camera/depth/points'
 
+    # kinect camera
+    rgb_image_topic = "/camera/rgb/image_color"
+    depth_image_topic = "/camera/depth/image_raw"
+    camera_info_topic = "/camera/depth/camera_info"
+    cloud_topic = '/camera/depth/points'
+
+    # fetch robot
     rgb_image_topic = "/head_camera/rgb/image_raw"
     depth_image_topic = "/head_camera/depth/image_raw"
     cloud_topic = "/head_camera/depth/points"
@@ -202,13 +208,15 @@ def main():
 
     save_location = 'examples'
 
+
     init_service(rgb_image_topic, depth_image_topic,camera_info_topic, cloud_topic)
+
 
     while not ready():
         time.sleep(0.5)
 
-    # rgbd_data = get_all_data()
-    # save_rgbd_example(rgbd_data, save_location, 0)
+    rgbd_data = get_all_data()
+    save_rgbd_example(rgbd_data, save_location, 1)
 
 
 def data_getter():
@@ -221,9 +229,6 @@ def data_getter():
 
     return data_dict
 
-
-
-
 if __name__ == '__main__':
     main()
-
+    print 'done'
