@@ -18,13 +18,10 @@ from normals import gpu_normals
 # from kinect_fusion import kfusion
 from utils import rgbd_getter
 import post_proc_da
-import socket
 # from pose_estimation import ransac
 import sys
 import time
 
-HOST = '192.168.1.2'
-PORT = 65432
 
 
 def _get_image_blob(im, im_depth, meta_data):
@@ -463,7 +460,7 @@ def test_net(sess, net, imdb, weights_filename, rig_filename, is_kfusion):
         # print "--- %s seconds ---" % (time.time() - start_time)
 
 
-        im_label_post, lbl_pcd_color = post_proc_da.post_proc(im,data_chunk['point_cloud_array'],im_label,data_chunk['camera_info'])
+        im_label_post, lbl_pcd_color = post_proc_da.post_proc(im,data_chunk['point_cloud_array'],im_label,data_chunk['camera_info'],data_chunk['rgb_image'])
 
         # print "--- %s seconds ---" % (time.time() - start_time)
         # kernel = np.ones((3,3),np.uint8)

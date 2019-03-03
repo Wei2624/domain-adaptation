@@ -69,7 +69,7 @@ RGBDAggregate = collections.namedtuple('RGBDAggregate', ['rgb_image', 'depth_ima
 class RGBDDataCollector:
     def __init__(self, rgb_image_topic, depth_image_topic, camera_info_topic, cloud_topic):
         if not rospy.core.is_initialized():
-            rospy.init_node('get_rgbd_server', anonymous=False)
+            rospy.init_node('get_rgbd_server', anonymous=True)
 
         self._read_lock = threading.Lock()
         self._br = CvBridge()
@@ -78,7 +78,7 @@ class RGBDDataCollector:
         self._depth_sub = rospy.Subscriber(depth_image_topic, sensor_msgs.msg.Image, self.depth_callback, queue_size=1)
         self._pcl_sub = rospy.Subscriber(cloud_topic, sensor_msgs.msg.PointCloud2, self.pcl_callback, queue_size=1)
         self.camera_sub = rospy.Subscriber(camera_info_topic, CameraInfo, self.camera_callback, queue_size=1)
-
+        
         self._rgb_image = None
         self._depth_image = None
         self._pcl_data = None

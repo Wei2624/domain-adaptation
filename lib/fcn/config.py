@@ -72,7 +72,7 @@ __C.TEST = edict()
 
 __C.TEST.SINGLE_FRAME = False
 __C.TEST.VERTEX_REG = False
-__C.TEST.VISUALIZE = True
+__C.TEST.VISUALIZE = False
 __C.TEST.RANSAC = False
 
 # Scales to compute real features
